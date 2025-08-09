@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProfeAI - Your AI Professor</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🤖 ProfeAI</h1>
+            <p class="tagline">Your Personal AI Professor with Emotional Intelligence</p>
+        </header>
+
+        <main class="main">
+            <div class="welcome-card">
+                <h2>Welcome to the Future of Learning</h2>
+                <p>ProfeAI adapts to your learning style, detects when you're confused, and provides personalized AI education tailored just for you.</p>
+                
+                <div class="features">
+                    <div class="feature">
+                        <h3>🧠 Theory</h3>
+                        <p>Deep dive into AI fundamentals, algorithms, and mathematical foundations</p>
+                    </div>
+                    <div class="feature">
+                        <h3>🔧 Tooling</h3>
+                        <p>Hands-on experience with the latest AI development tools and frameworks</p>
+                    </div>
+                    <div class="feature">
+                        <h3>💡 Hybrid</h3>
+                        <p>Perfect blend of theory and practice for comprehensive understanding</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="registration-form">
+                <h2>Get Started</h2>
+                <form method="POST" action="/register">
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" name="name" required placeholder="Enter your name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required placeholder="your.email@example.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="specialization">Learning Focus</label>
+                        <select id="specialization" name="specialization" required>
+                            <option value="">Choose your path...</option>
+                            <option value="Theory">Theory - AI Fundamentals & Algorithms</option>
+                            <option value="Tooling">Tooling - Hands-on AI Development</option>
+                            <option value="Hybrid">Hybrid - Theory + Practical Application</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="level">Current Level</label>
+                        <select id="level" name="level">
+                            <option value="Beginner">Beginner - New to AI</option>
+                            <option value="Intermediate">Intermediate - Some AI knowledge</option>
+                            <option value="Advanced">Advanced - Experienced with AI</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Start Learning with ProfeAI</button>
+                </form>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>Built with ❤️ for the AI learning community</p>
+        </footer>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

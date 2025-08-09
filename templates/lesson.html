@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ lesson.title }} - ProfeAI</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-nav">
+                <a href="/dashboard/{{ user.id }}" class="back-link">← Back to Dashboard</a>
+                <h1>🤖 ProfeAI</h1>
+            </div>
+        </header>
+
+        <main class="main">
+            <article class="lesson-content">
+                <div class="lesson-header">
+                    <h1>{{ lesson.title }}</h1>
+                    <div class="lesson-meta">
+                        <span class="lesson-type">{{ lesson.lesson_type }}</span>
+                        <span class="lesson-difficulty">{{ lesson.difficulty }}</span>
+                        <span class="lesson-date">{{ lesson.created_at.strftime('%B %d, %Y at %I:%M %p') }}</span>
+                    </div>
+                </div>
+
+                <div class="lesson-body">
+                    {{ lesson.content | replace('\n', '<br>') | safe }}
+                </div>
+
+                <!-- Feedback Section -->
+                <div class="feedback-section">
+                    <h3>How was this explanation?</h3>
+                    <div class="feedback-buttons">
+                        <form method="POST" action="/feedback/{{ lesson.id }}" class="inline-form">
+                            <input type="hidden" name="feedback_type" value="clear">
+                            <button type="submit" class="btn-feedback positive">
+                                😊 Clear & Helpful
+                            </button>
+                        </form>
+
+                        <form method="POST" action="/feedback/{{ lesson.id }}" class="inline-form">
+                            <input type="hidden" name="feedback_type" value="confused">
+                            <button type="submit" class="btn-feedback neutral">
+                                😕 I'm Confused
+                            </button>
+                        </form>
+
+                        <form method="POST" action="/feedback/{{ lesson.id }}" class="inline-form">
+                            <input type="hidden" name="feedback_type" value="frustrated">
+                            <button type="submit" class="btn-feedback negative">
+                                😤 Too Frustrating
+                            </button>
+                        </form>
+                    </div>
+
+                    <p class="feedback-help">
+                        💡 <strong>ProfeAI adapts to your feedback!</strong> If you're confused or frustrated, 
+                        I'll generate an alternative explanation with different examples and analogies.
+                    </p>
+                </div>
+
+                <!-- Lesson Actions -->
+                <div class="lesson-actions">
+                    {% if not lesson.completed %}
+                    <form method="POST" action="/complete_lesson/{{ lesson.id }}" class="inline-form">
+                        <button type="submit" class="btn-primary">
+                            ✓ Mark as Completed
+                        </button>
+                    </form>
+                    {% else %}
+                    <div class="completed-status">
+                        <span class="completed-badge">✅ Completed</span>
+                        {% if lesson.completion_time %}
+                        <span class="completion-date">on {{ lesson.completion_time.strftime('%B %d, %Y') }}</span>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    <a href="/dashboard/{{ user.id }}" class="btn-secondary">
+                        Back to Dashboard
+                    </a>
+                </div>
+            </article>
+
+            <!-- Show messages -->
+            {% set query_params = request.query_params %}
+            {% if query_params.get('message') %}
+                <div class="message">
+                    {% if query_params.get('message') == 'alternative' %}
+                        <div class="message success">
+                            🔄 Here's an alternative explanation! I've tried to make it clearer based on your feedback.
+                        </div>
+                    {% elif query_params.get('message') == 'feedback_received' %}
+                        <div class="message info">
+                            📝 Thank you for your feedback! I'll keep improving to serve you better.
+                        </div>
+                    {% elif query_params.get('message') == 'thanks' %}
+                        <div class="message success">
+                            🎉 Great! I'm happy this explanation was helpful. Keep up the excellent learning!
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <!-- Learning Tips Sidebar -->
+            <aside class="learning-tips-sidebar">
+                <h3>💡 Learning Tips</h3>
+                <div class="tips-content">
+                    {% if lesson.lesson_type == "Theory" %}
+                    <div class="tip">
+                        <strong>Take Notes:</strong> Jot down key concepts and their relationships.
+                    </div>
+                    <div class="tip">
+                        <strong>Make Connections:</strong> How does this relate to what you already know?
+                    </div>
+                    <div class="tip">
+                        <strong>Ask Questions:</strong> Use the feedback buttons if anything is unclear.
+                    </div>
+                    {% elif lesson.lesson_type == "Tooling" %}
+                    <div class="tip">
+                        <strong>Try It Out:</strong> Copy the code examples and experiment with them.
+                    </div>
+                    <div class="tip">
+                        <strong>Modify & Break:</strong> Change parameters to see what happens.
+                    </div>
+                    <div class="tip">
+                        <strong>Build Something:</strong> Apply these tools to your own small project.
+                    </div>
+                    {% else %}
+                    <div class="tip">
+                        <strong>Theory + Practice:</strong> Connect the concepts to the implementation.
+                    </div>
+                    <div class="tip">
+                        <strong>Experiment:</strong> Try the theoretical concepts in code.
+                    </div>
+                    <div class="tip">
+                        <strong>Reflect:</strong> How do the math and code work together?
+                    </div>
+                    {% endif %}
+                </div>
+            </aside>
+        </main>
+
+        <footer class="footer">
+            <p>ProfeAI - Adaptive AI Learning</p>
+        </footer>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

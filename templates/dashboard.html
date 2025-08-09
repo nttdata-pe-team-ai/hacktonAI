@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - ProfeAI</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🤖 ProfeAI Dashboard</h1>
+            <div class="user-info">
+                <span>Welcome back, <strong>{{ user.name }}</strong></span>
+                <span class="specialization-badge">{{ user.specialization }}</span>
+            </div>
+        </header>
+
+        <main class="main">
+            <!-- Progress Overview -->
+            <div class="progress-card">
+                <h2>Your Learning Progress</h2>
+                <div class="progress-stats">
+                    <div class="stat">
+                        <div class="stat-number">{{ completed_lessons }}</div>
+                        <div class="stat-label">Completed Lessons</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">{{ total_lessons }}</div>
+                        <div class="stat-label">Total Lessons</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">{{ progress_percentage }}%</div>
+                        <div class="stat-label">Progress</div>
+                    </div>
+                </div>
+                
+                {% if total_lessons > 0 %}
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: {{ progress_percentage }}%"></div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="actions-card">
+                <h2>Ready for Your Next Lesson?</h2>
+                <div class="action-buttons">
+                    <form method="POST" action="/generate_lesson/{{ user.id }}" class="inline-form">
+                        <button type="submit" class="btn-primary">Generate New Lesson</button>
+                    </form>
+                    
+                    <form method="POST" action="/generate_lesson/{{ user.id }}" class="inline-form topic-form">
+                        <input type="text" name="topic" placeholder="Request a specific topic..." class="topic-input">
+                        <button type="submit" class="btn-secondary">Custom Lesson</button>
+                    </form>
+                </div>
+
+                <div class="learning-tips">
+                    <h3>💡 ProfeAI Tips</h3>
+                    {% if user.specialization == "Theory" %}
+                    <p>Focus on understanding core concepts. Don't hesitate to ask for different explanations if something seems unclear!</p>
+                    {% elif user.specialization == "Tooling" %}
+                    <p>Practice with the code examples. Try modifying them to see what happens - learning by doing is key!</p>
+                    {% else %}
+                    <p>You're getting the best of both worlds! Make connections between theory and practice as you learn.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Recent Lessons -->
+            {% if recent_lessons %}
+            <div class="lessons-card">
+                <h2>Recent Lessons</h2>
+                <div class="lessons-list">
+                    {% for lesson in recent_lessons %}
+                    <div class="lesson-item {% if lesson.completed %}completed{% endif %}">
+                        <div class="lesson-info">
+                            <h3><a href="/lesson/{{ lesson.id }}">{{ lesson.title }}</a></h3>
+                            <div class="lesson-meta">
+                                <span class="lesson-type">{{ lesson.lesson_type }}</span>
+                                <span class="lesson-date">{{ lesson.created_at.strftime('%B %d, %Y') }}</span>
+                                {% if lesson.completed %}
+                                <span class="completed-badge">✓ Completed</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if not lesson.completed %}
+                        <a href="/lesson/{{ lesson.id }}" class="btn-small">Continue</a>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Getting Started Guide (for new users) -->
+            {% if total_lessons == 0 %}
+            <div class="getting-started-card">
+                <h2>🚀 Getting Started</h2>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>Generate Your First Lesson</h3>
+                            <p>Click "Generate New Lesson" to get a personalized lesson based on your {{ user.specialization }} focus.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>Provide Feedback</h3>
+                            <p>If you're confused or frustrated, let ProfeAI know! It will adapt and provide better explanations.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>Practice & Progress</h3>
+                            <p>Complete exercises, mark lessons as done, and watch your AI knowledge grow!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Show messages -->
+            {% set query_params = request.query_params %}
+            {% if query_params.get('message') %}
+                <div class="message success">
+                    {% if query_params.get('message') == 'lesson_completed' %}
+                        🎉 Great job! Lesson marked as completed.
+                    {% endif %}
+                </div>
+            {% endif %}
+        </main>
+
+        <footer class="footer">
+            <p>ProfeAI - Adaptive AI Learning | <a href="/">Home</a></p>
+        </footer>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
